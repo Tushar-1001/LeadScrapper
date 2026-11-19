@@ -201,6 +201,16 @@ export default function App() {
 
       ws.onclose = () => {
         wsRef.current = null;
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+        setIsLoading((prev) => {
+          if (prev) {
+            setStatus('⚠️ Connection disconnected or interrupted. Please try again.');
+          }
+          return false;
+        });
       };
     },
     [category, selectedCities]
