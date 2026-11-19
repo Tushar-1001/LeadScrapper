@@ -1,3 +1,13 @@
+---
+title: LeadScrapper Pro
+emoji: ⚡
+colorFrom: indigo
+colorTo: green
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # 🎯 LeadScrapper
 
 A full-stack lead-generation tool that scrapes **Google Maps** to find businesses **without websites** — so you can pitch website-building services to them.

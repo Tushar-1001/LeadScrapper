@@ -31,12 +31,11 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
-# Environment variables for Puppeteer on Render
+# Universal port: 7860 default for Hugging Face (or overridden by PORT env)
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
     PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium \
     NODE_ENV=production \
-    NODE_OPTIONS="--max-old-space-size=256" \
-    PORT=4000
+    PORT=7860
 
 WORKDIR /app
 
@@ -50,6 +49,11 @@ COPY server.js ./
 # Copy built frontend assets from stage 1
 COPY --from=client-builder /app/client/dist ./client/dist
 
-EXPOSE 4000
+# Ensure non-root node user (UID 1000) has ownership for Hugging Face Spaces
+RUN chown -R node:node /app
+
+USER node
+
+EXPOSE 7860
 
 CMD ["node", "server.js"]
