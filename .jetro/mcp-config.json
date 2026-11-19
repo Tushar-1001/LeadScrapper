@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "jetro": {
+      "command": "C:\\Users\\LENOVO\\.jetro\\runtime\\node-win32-x64.exe",
+      "args": [
+        "C:\\Users\\LENOVO\\.jetro\\mcp-server\\index.js"
+      ],
+      "env": {
+        "JET_WORKSPACE": "e:\\Projects\\leadScrapper",
+        "JET_API_URL": "https://api.jetro.ai",
+        "PATH": "C:\\Users\\LENOVO\\.jetro\\runtime;C:\\Program Files\\Alacritty\\;C:\\Program Files\\Common Files\\Oracle\\Java\\javapath;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Microsoft SQL Server\\150\\Tools\\Binn\\;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\System32\\Wbem;C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\;C:\\WINDOWS\\System32\\OpenSSH\\;C:\\Program Files\\nodejs\\;C:\\Program Files\\Git\\cmd;C:\\Users\\LENOVO\\AppData\\Local\\jcode\\bin;C:\\Program Files\\MySQL\\MySQL Shell 8.0\\bin\\;C:\\Users\\LENOVO\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\LENOVO\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Program Files\\sf\\bin;C:\\Users\\LENOVO\\AppData\\Roaming\\npm;C:\\Users\\LENOVO\\AppData\\Local\\Python\\bin;C:\\Users\\LENOVO\\AppData\\Local\\Programs\\Antigravity\\bin;C:\\Users\\LENOVO\\AppData\\Local\\Programs\\Antigravity IDE\\bin;c:\\users\\lenovo\\.local\\bin;C:\\Users\\LENOVO\\AppData\\Local\\Microsoft\\WinGet\\Packages\\astral-sh.uv_Microsoft.Winget.Source_8wekyb3d8bbwe;C:\\Users\\LENOVO\\AppData\\Local\\Programs\\Microsoft VS Code\\bin\\copilot-shim;C:\\Users\\LENOVO\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe\\ffmpeg-9.0.2-full_build\\bin;"
+      }
+    }
+  }
+}
