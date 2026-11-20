@@ -32,7 +32,7 @@ export default function Autocomplete({
   // Filter items based on query
   useEffect(() => {
     if (!value || value.length < 1) {
-      setItems(suggestions.slice(0, 14));
+      setItems(suggestions.slice(0, 60));
       return;
     }
 
@@ -40,7 +40,7 @@ export default function Autocomplete({
     const localMatches = suggestions.filter((s) =>
       s.toLowerCase().includes(lower)
     );
-    setItems(localMatches.slice(0, 16));
+    setItems(localMatches.slice(0, 60));
   }, [value, suggestions]);
 
   function handleKeyDown(e) {
@@ -107,7 +107,7 @@ export default function Autocomplete({
       </div>
 
       {open && items.length > 0 && (
-        <ul className="absolute z-50 w-full bg-[#0F1626] border border-white/10 rounded-xl mt-1.5 max-h-60 overflow-y-auto shadow-2xl divide-y divide-white/5 animate-fadeIn">
+        <ul className="absolute z-50 left-0 right-0 w-full bg-[#0C1322]/95 border border-indigo-500/30 rounded-xl mt-1.5 max-h-72 overflow-y-auto shadow-2xl divide-y divide-white/5 animate-fadeIn backdrop-blur-xl">
           {items.map((item, idx) => (
             <li
               key={item + idx}

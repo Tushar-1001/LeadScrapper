@@ -140,6 +140,28 @@ export const categories = [
   'Daycare & Preschool Center',
   'Driving School',
   'Music School & Lessons',
+
+  // High-Ticket Specialized Services
+  'Epoxy Flooring & Garage Coating',
+  'Septic Tank Pumping & Repair',
+  'Chimney Sweep & Fireplace Repair',
+  'Window Tinting & Film Installation',
+  'Asphalt Paving & Sealcoating',
+  'Dumpster Rental & Waste Management',
+  'Stump Grinding & Tree Removal',
+  'Solar Panel Cleaning & Maintenance',
+  'Crawl Space & Basement Waterproofing',
+  'Appliance Installation & Repair',
+  'Cabinet Refacing & Custom Cabinets',
+  'Dryer Vent Cleaning Service',
+  'Gutter Guard & Leaf Filter Installation',
+  'Security Camera & Alarm Installation',
+  'Well Drilling & Pump Repair',
+  'Mobile Car Wash & Detailing',
+  'Pergola, Gazebo & Awning Builder',
+  'Bail Bonds Service',
+  'HVAC Duct Cleaning & Sanitizing',
+  'Commercial Carpet & Floor Cleaning',
 ];
 
 /**

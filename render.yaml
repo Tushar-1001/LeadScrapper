@@ -12,5 +12,3 @@ services:
         value: /usr/bin/chromium
       - key: NODE_ENV
         value: production
-      - key: NODE_OPTIONS
-        value: "--max-old-space-size=256"

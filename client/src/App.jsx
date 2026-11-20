@@ -201,16 +201,6 @@ export default function App() {
 
       ws.onclose = () => {
         wsRef.current = null;
-        if (timerRef.current) {
-          clearInterval(timerRef.current);
-          timerRef.current = null;
-        }
-        setIsLoading((prev) => {
-          if (prev) {
-            setStatus('⚠️ Connection disconnected or interrupted. Please try again.');
-          }
-          return false;
-        });
       };
     },
     [category, selectedCities]
@@ -392,9 +382,9 @@ export default function App() {
 
       {/* ────────── MAIN CONTENT AREA ────────── */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-7">
-        
+
         {/* ── SEARCH & DISCOVERY COMMAND CENTER ── */}
-        <section className="glass-panel rounded-2xl p-6 sm:p-7 relative overflow-hidden shadow-2xl">
+        <section className="glass-panel rounded-2xl p-6 sm:p-7 relative shadow-2xl">
           <div className="absolute -top-24 -right-24 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-5 border-b border-white/5">
@@ -411,10 +401,10 @@ export default function App() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-400 bg-white/5 px-2.5 py-1 rounded-md border border-white/5 font-mono">
-                120+ Niches
+                140+ Niches
               </span>
               <span className="text-xs text-slate-400 bg-white/5 px-2.5 py-1 rounded-md border border-white/5 font-mono">
-                200+ Metros
+                250+ Metros
               </span>
             </div>
           </div>
@@ -422,7 +412,7 @@ export default function App() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
               {/* Category Field */}
-              <div className="lg:col-span-5 space-y-2">
+              <div className="lg:col-span-5 space-y-2 relative z-30">
                 <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center justify-between">
                   <span>1. Business Category</span>
                   <span className="text-[11px] text-slate-500 font-normal">e.g. Plumber, Roofing, HVAC</span>
@@ -441,31 +431,34 @@ export default function App() {
                   icon={BuildingIcon}
                 />
 
-                {/* Category Quick Picks */}
-                <div className="flex items-center gap-1.5 pt-1 overflow-x-auto text-[11px]">
+                {/* Category Quick Picks (Equal Size Boxes) */}
+                <div className="flex items-center gap-2 pt-1 text-[11px]">
                   <span className="text-slate-500 shrink-0 font-medium">Quick:</span>
-                  {popularCategories.slice(0, 5).map((cat) => {
-                    const isSelected = category.toLowerCase() === cat.toLowerCase();
-                    return (
-                      <button
-                        type="button"
-                        key={cat}
-                        onClick={() => handleSelectCategoryChip(cat)}
-                        className={`px-2 py-0.5 rounded-md font-medium transition ${
-                          isSelected
-                            ? 'bg-indigo-500/25 text-indigo-300 border border-indigo-500/40'
-                            : 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/5'
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    );
-                  })}
+                  <div className="grid grid-cols-5 gap-1.5 flex-1">
+                    {popularCategories.slice(0, 5).map((cat) => {
+                      const isSelected = category.toLowerCase() === cat.toLowerCase();
+                      return (
+                        <button
+                          type="button"
+                          key={cat}
+                          onClick={() => handleSelectCategoryChip(cat)}
+                          title={cat}
+                          className={`w-full py-1 px-1 rounded-md font-medium text-center truncate transition text-[11px] ${
+                            isSelected
+                              ? 'bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 shadow-sm'
+                              : 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/5'
+                          }`}
+                        >
+                          {cat}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
               {/* Target Metros Multi-Select */}
-              <div className="lg:col-span-5 space-y-2">
+              <div className="lg:col-span-5 space-y-2 relative z-20">
                 <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center justify-between">
                   <span>2. Target US Metros</span>
                   {selectedCities.length > 0 && (
@@ -488,37 +481,40 @@ export default function App() {
                   error={errors.location}
                 />
 
-                {/* Metros Quick Picks */}
-                <div className="flex items-center gap-1.5 pt-1 overflow-x-auto text-[11px]">
+                {/* Metros Quick Picks (Equal Size Boxes) */}
+                <div className="flex items-center gap-2 pt-1 text-[11px]">
                   <span className="text-slate-500 shrink-0 font-medium">Metros:</span>
-                  {popularCities.slice(0, 5).map((city) => {
-                    const isSelected = selectedCities.includes(city);
-                    return (
-                      <button
-                        type="button"
-                        key={city}
-                        onClick={() => handleToggleCityChip(city)}
-                        className={`px-2 py-0.5 rounded-md font-medium transition ${
-                          isSelected
-                            ? 'bg-indigo-500/25 text-indigo-300 border border-indigo-500/40'
-                            : 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/5'
-                        }`}
-                      >
-                        {isSelected ? `✓ ${city.split(',')[0]}` : `+ ${city.split(',')[0]}`}
-                      </button>
-                    );
-                  })}
+                  <div className="grid grid-cols-5 gap-1.5 flex-1">
+                    {popularCities.slice(0, 5).map((city) => {
+                      const isSelected = selectedCities.includes(city);
+                      const cityName = city.split(',')[0];
+                      return (
+                        <button
+                          type="button"
+                          key={city}
+                          onClick={() => handleToggleCityChip(city)}
+                          title={city}
+                          className={`w-full py-1 px-1 rounded-md font-medium text-center truncate transition text-[11px] ${
+                            isSelected
+                              ? 'bg-indigo-500/25 text-indigo-300 border border-indigo-500/40 shadow-sm'
+                              : 'bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white border border-white/5'
+                          }`}
+                        >
+                          {isSelected ? `✓ ${cityName}` : `+ ${cityName}`}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
               {/* Launch Action */}
-              <div className="lg:col-span-2 flex flex-col justify-end">
+              <div className="lg:col-span-2 flex flex-col justify-end relative z-10">
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className={`glow-button w-full h-[46px] rounded-xl text-white font-bold text-sm tracking-wide flex items-center justify-center gap-2 transition ${
-                    isLoading ? 'opacity-60 cursor-not-allowed' : 'active:scale-95'
-                  }`}
+                  className={`glow-button w-full h-[46px] rounded-xl text-white font-bold text-sm tracking-wide flex items-center justify-center gap-2 transition ${isLoading ? 'opacity-60 cursor-not-allowed' : 'active:scale-95'
+                    }`}
                 >
                   {isLoading ? (
                     <span className="inline-flex items-center justify-center gap-2">
@@ -662,11 +658,10 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setActiveFilter('all')}
-                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition ${
-                  activeFilter === 'all'
-                    ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
-                    : 'bg-surface-900 text-slate-400 hover:text-white border border-white/5'
-                }`}
+                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition ${activeFilter === 'all'
+                  ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                  : 'bg-surface-900 text-slate-400 hover:text-white border border-white/5'
+                  }`}
               >
                 <span>All Leads</span>
                 <span className="bg-indigo-500/30 text-[10px] px-1.5 py-0.2 rounded-full font-mono">
@@ -677,11 +672,10 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setActiveFilter('hot')}
-                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition ${
-                  activeFilter === 'hot'
-                    ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                    : 'bg-surface-900 text-slate-400 hover:text-white border border-white/5'
-                }`}
+                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition ${activeFilter === 'hot'
+                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                  : 'bg-surface-900 text-slate-400 hover:text-white border border-white/5'
+                  }`}
               >
                 <span className="text-amber-400">🔥 Hot Leads (50+ Reviews)</span>
                 <span className="bg-white/5 text-[10px] px-1.5 py-0.2 rounded-full font-mono">
@@ -692,11 +686,10 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setActiveFilter('warm')}
-                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition ${
-                  activeFilter === 'warm'
-                    ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
-                    : 'bg-surface-900 text-slate-400 hover:text-white border border-white/5'
-                }`}
+                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition ${activeFilter === 'warm'
+                  ? 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                  : 'bg-surface-900 text-slate-400 hover:text-white border border-white/5'
+                  }`}
               >
                 <span className="text-blue-400">⚡ Warm (10-49)</span>
                 <span className="bg-white/5 text-[10px] px-1.5 py-0.2 rounded-full font-mono">
@@ -707,11 +700,10 @@ export default function App() {
               <button
                 type="button"
                 onClick={() => setActiveFilter('phone')}
-                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition ${
-                  activeFilter === 'phone'
-                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
-                    : 'bg-surface-900 text-slate-400 hover:text-white border border-white/5'
-                }`}
+                className={`px-3 py-1.5 rounded-lg font-semibold flex items-center gap-1.5 transition ${activeFilter === 'phone'
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                  : 'bg-surface-900 text-slate-400 hover:text-white border border-white/5'
+                  }`}
               >
                 <span>📞 Has Phone Only</span>
                 <span className="bg-white/5 text-[10px] px-1.5 py-0.2 rounded-full font-mono">

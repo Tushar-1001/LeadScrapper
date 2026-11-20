@@ -318,7 +318,6 @@ async function verifyCandidatePlace(verifierPage, mapsLink, candidateName, rpcSt
       };
     });
 
-    if (placeVerifyCache.size > 500) placeVerifyCache.clear();
     placeVerifyCache.set(normName, details);
     return details;
   } catch (err) {
@@ -412,23 +411,12 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
         '--ignore-certificate-errors',
         '--disable-accelerated-2d-canvas',
         '--disable-gpu',
-        '--no-first-run',
-        '--no-zygote',
-        '--disable-extensions',
-        '--disable-default-apps',
-        '--disable-sync',
-        '--disable-translate',
-        '--mute-audio',
-        '--hide-scrollbars',
-        '--js-flags=--max-old-space-size=128',
-        '--renderer-process-limit=1',
-        '--window-size=1024,768',
         '--lang=en-US,en',
       ],
     });
 
     const page = await browser.newPage();
-    await page.setViewport({ width: 1024, height: 768 });
+    await page.setViewport({ width: 1280, height: 900 });
     await page.setUserAgent(
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
     );
@@ -454,25 +442,30 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
       }
     });
 
-    // 1 single dedicated verifier worker page (keeps memory under 200MB for 512MB RAM cloud tiers)
-    const verifierPage = await browser.newPage();
-    await verifierPage.setViewport({ width: 800, height: 600 });
-    attachRpcInterceptor(verifierPage, rpcStore);
-    await verifierPage.setRequestInterception(true);
-    verifierPage.on('request', (req) => {
-      const rType = req.resourceType();
-      const url = req.url();
-      if (
-        ['image', 'media', 'font', 'stylesheet'].includes(rType) ||
-        url.includes('google-analytics') ||
-        url.includes('/log?')
-      ) {
-        req.abort();
-      } else {
-        req.continue();
-      }
-    });
-    const verifiers = [verifierPage];
+    // Concurrent verifier pool (4 parallel worker pages for ultra-fast verification)
+    const verifiers = [
+      await browser.newPage(),
+      await browser.newPage(),
+      await browser.newPage(),
+      await browser.newPage(),
+    ];
+    for (const v of verifiers) {
+      attachRpcInterceptor(v, rpcStore);
+      await v.setRequestInterception(true);
+      v.on('request', (req) => {
+        const rType = req.resourceType();
+        const url = req.url();
+        if (
+          ['image', 'media', 'font'].includes(rType) ||
+          url.includes('google-analytics') ||
+          url.includes('/log?')
+        ) {
+          req.abort();
+        } else {
+          req.continue();
+        }
+      });
+    }
 
     for (let qIdx = 0; qIdx < queriesToRun.length; qIdx++) {
       if (leads.length >= TARGET_LEADS) break;
