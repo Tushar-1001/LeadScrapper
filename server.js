@@ -326,41 +326,158 @@ async function verifyCandidatePlace(verifierPage, mapsLink, candidateName, rpcSt
   }
 }
 
-// Major US Metros and their key suburbs/neighborhoods for deep lead discovery
-const METRO_SUBURBS = {
-  dallas: ['Mesquite', 'Garland', 'Grand Prairie', 'Irving', 'Arlington', 'Carrollton', 'Richardson', 'DeSoto', 'Plano'],
-  houston: ['Pasadena', 'Katy', 'Pearland', 'Sugar Land', 'Spring', 'Conroe', 'Baytown', 'Cypress', 'Tomball'],
-  austin: ['Round Rock', 'Cedar Park', 'Pflugerville', 'Georgetown', 'San Marcos', 'Kyle', 'Buda'],
-  'san antonio': ['New Braunfels', 'Schertz', 'Cibolo', 'Converse', 'Boerne', 'Universal City'],
-  'fort worth': ['North Richland Hills', 'Haltom City', 'Keller', 'Burleson', 'Mansfield', 'Euless', 'Bedford'],
-  'los angeles': ['Glendale', 'Pasadena', 'Torrance', 'Burbank', 'Long Beach', 'Inglewood', 'El Monte', 'Downey'],
-  chicago: ['Cicero', 'Evanston', 'Naperville', 'Aurora', 'Joliet', 'Oak Lawn', 'Berwyn', 'Des Plaines'],
-  phoenix: ['Mesa', 'Chandler', 'Glendale', 'Scottsdale', 'Tempe', 'Peoria', 'Surprise', 'Avondale'],
-  miami: ['Hialeah', 'Coral Gables', 'Homestead', 'Doral', 'Miami Beach', 'Kendall', 'North Miami'],
-  atlanta: ['Marietta', 'Alpharetta', 'Roswell', 'Decatur', 'Sandy Springs', 'Smyrna', 'Duluth', 'Kennesaw'],
-  denver: ['Aurora', 'Lakewood', 'Thornton', 'Arvada', 'Westminster', 'Centennial', 'Littleton'],
-  seattle: ['Bellevue', 'Tacoma', 'Renton', 'Kent', 'Everett', 'Federal Way', 'Kirkland', 'Auburn'],
-  'new york': ['Queens', 'Brooklyn', 'Bronx', 'Staten Island', 'Yonkers', 'New Rochelle', 'Mount Vernon'],
-  'san diego': ['Chula Vista', 'Oceanside', 'Escondido', 'Carlsbad', 'El Cajon', 'Vista', 'San Marcos'],
-  'las vegas': ['Henderson', 'North Las Vegas', 'Paradise', 'Spring Valley', 'Sunrise Manor'],
-  orlando: ['Kissimmee', 'Sanford', 'Altamonte Springs', 'Winter Park', 'Apopka', 'Ocoee'],
-  tampa: ['St. Petersburg', 'Clearwater', 'Brandon', 'Largo', 'Riverview', 'Palm Harbor'],
-  charlotte: ['Concord', 'Gastonia', 'Rock Hill', 'Huntersville', 'Matthews', 'Monroe'],
-  columbus: ['Dublin', 'Westerville', 'Grove City', 'Reynoldsburg', 'Hilliard', 'Gahanna'],
-  indianapolis: ['Carmel', 'Fishers', 'Noblesville', 'Greenwood', 'Lawrence', 'Plainfield'],
-  nashville: ['Franklin', 'Murfreesboro', 'Hendersonville', 'Brentwood', 'Lebanon', 'Smyrna'],
-  jacksonville: ['Jacksonville Beach', 'Orange Park', 'St. Augustine', 'Atlantic Beach'],
-  'san jose': ['Sunnyvale', 'Santa Clara', 'Campbell', 'Milpitas', 'Cupertino', 'Mountain View'],
-  detroit: ['Dearborn', 'Livonia', 'Troy', 'Warren', 'Sterling Heights', 'Westland'],
-  philadelphia: ['Upper Darby', 'Norristown', 'Chester', 'Bensalem', 'Cherry Hill', 'Camden'],
-  boston: ['Cambridge', 'Quincy', 'Newton', 'Somerville', 'Framingham', 'Waltham'],
-  baltimore: ['Towson', 'Columbia', 'Dundalk', 'Glen Burnie', 'Ellicott City'],
-  milwaukee: ['Waukesha', 'West Allis', 'Wauwatosa', 'Greenfield'],
-  'kansas city': ['Overland Park', 'Olathe', 'Lee\'s Summit', 'Independence', 'Shawnee'],
-  raleigh: ['Cary', 'Apex', 'Wake Forest', 'Holly Springs', 'Garner'],
-  'salt lake city': ['West Valley City', 'Provo', 'West Jordan', 'Orem', 'Sandy'],
-  'oklahoma city': ['Norman', 'Edmond', 'Moore', 'Midwest City'],
+// Category Synonyms & High-Intent Trade Variations for US Local Markets
+const CATEGORY_TRADE_SYNONYMS = {
+  plumber: ['Plumbing Repair', 'Licensed Plumber', 'Residential Plumber', 'Emergency Plumbing', 'Commercial Plumber', 'Drain Cleaning'],
+  plumbing: ['Plumbing Repair', 'Licensed Plumber', 'Residential Plumber', 'Emergency Plumbing', 'Commercial Plumber'],
+  'roofing contractor': ['Roof Repair & Replacement', 'Residential Roofing', 'Commercial Roofing', 'Emergency Roof Repair', 'Roofing Services'],
+  roofing: ['Roof Repair & Replacement', 'Residential Roofing', 'Commercial Roofing', 'Emergency Roof Repair'],
+  'hvac contractor': ['AC Repair', 'Heating & Air Conditioning', 'HVAC Repair Service', 'Air Conditioning Contractor', 'Furnace Repair'],
+  'hvac services': ['AC Repair', 'Heating & Air Conditioning', 'HVAC Repair Service', 'Air Conditioning Contractor'],
+  hvac: ['AC Repair', 'Heating & Air Conditioning', 'HVAC Repair Service', 'Air Conditioning Contractor'],
+  electrician: ['Electrical Repair', 'Licensed Electrician', 'Residential Electrician', 'Emergency Electrician', 'Commercial Electrician'],
+  electrical: ['Electrical Repair', 'Licensed Electrician', 'Residential Electrician', 'Emergency Electrician'],
+  'landscaping & lawn care': ['Lawn Care Service', 'Lawn Mowing & Maintenance', 'Residential Landscaping', 'Tree Trimming & Removal', 'Yard Maintenance'],
+  landscaping: ['Lawn Care Service', 'Lawn Mowing & Maintenance', 'Residential Landscaping', 'Tree Trimming & Removal'],
+  'lawn care': ['Lawn Care Service', 'Lawn Mowing & Maintenance', 'Yard Clean Up', 'Lawn Treatment'],
+  'general contractor': ['Home Remodeling Contractor', 'Home Renovation', 'Kitchen & Bath Remodeling', 'Residential Contractor'],
+  'home remodeling & renovation': ['Kitchen Remodeling', 'Bathroom Remodeling', 'Home Renovation Contractor', 'Home Improvement'],
+  'kitchen & bathroom remodeling': ['Kitchen Remodeler', 'Bathroom Remodeler', 'Cabinet & Tile Installation'],
+  painter: ['House Painting', 'Interior & Exterior Painting', 'Residential Painter', 'Commercial Painter'],
+  painting: ['House Painting', 'Interior & Exterior Painting', 'Residential Painter', 'Commercial Painter'],
+  'towing service': ['Emergency Towing', '24 Hour Tow Truck', 'Roadside Assistance', 'Wrecker Service'],
+  towing: ['Emergency Towing', '24 Hour Tow Truck', 'Roadside Assistance', 'Wrecker Service'],
+  'auto repair': ['Auto Mechanic', 'Brake Repair & Service', 'Transmission Repair', 'Engine Diagnostic & Repair'],
+  'auto repair & mechanic': ['Auto Mechanic', 'Brake Repair & Service', 'Transmission Repair', 'Car Maintenance'],
+  dentist: ['Family Dentistry', 'Emergency Dentist', 'Dental Clinic', 'Cosmetic Dentist'],
+  'pest control': ['Exterminator Service', 'Termite Control', 'Pest Extermination', 'Bed Bug Removal'],
+  locksmith: ['Emergency Locksmith', '24 Hour Locksmith', 'Car Key Replacement', 'Mobile Locksmith'],
+  'carpet cleaning': ['Carpet & Upholstery Cleaning', 'Steam Cleaning', 'Commercial Carpet Cleaning', 'Rug Cleaning'],
+  'pressure washing': ['Power Washing', 'Driveway & House Washing', 'Commercial Pressure Washing', 'Roof Cleaning'],
+  'tree service': ['Tree Removal', 'Tree Trimming & Pruning', 'Stump Grinding', 'Emergency Tree Service'],
+  'fence contractor': ['Fence Installation', 'Wood & Vinyl Fencing', 'Fence Repair Contractor'],
+  'concrete contractor': ['Concrete Flatwork & Driveways', 'Stamped Concrete', 'Foundation & Patio Concrete'],
+  'epoxy flooring & garage coating': ['Garage Epoxy Flooring', 'Commercial Epoxy Coating', 'Concrete Polishing & Epoxy'],
+  'septic tank pumping & repair': ['Septic Pumping', 'Septic Tank Cleaning', 'Septic System Repair'],
+  'chimney sweep & fireplace repair': ['Chimney Inspection & Cleaning', 'Fireplace Repair', 'Chimney Cap Installation'],
+  'asphalt paving & sealcoating': ['Driveway Paving', 'Asphalt Sealcoating', 'Parking Lot Paving'],
+  'dumpster rental & waste management': ['Roll Off Dumpster Rental', 'Commercial Waste Management', 'Junk Removal & Dumpsters'],
+  'stump grinding & tree removal': ['Stump Grinding Service', 'Tree Removal Specialist', 'Emergency Tree Cutting'],
+  'solar panel cleaning & maintenance': ['Solar Panel Cleaning', 'Solar Panel Maintenance & Repair', 'Solar System Service'],
+  'crawl space & basement waterproofing': ['Basement Waterproofing', 'Crawl Space Encapsulation', 'Foundation Waterproofing'],
+  'appliance installation & repair': ['Appliance Repair Service', 'Refrigerator & Washer Repair', 'Commercial Appliance Repair'],
+  'cabinet refacing & custom cabinets': ['Cabinet Refacing', 'Custom Kitchen Cabinets', 'Cabinet Makers & Installers'],
+  'dryer vent cleaning service': ['Dryer Vent Cleaning', 'Air Duct & Dryer Vent Service', 'Commercial Dryer Vent Cleaning'],
+  'gutter guard & leaf filter installation': ['Gutter Guard Installation', 'Seamless Gutter Installation', 'Gutter Cleaning & Guards'],
+  'security camera & alarm installation': ['Security Camera Installation', 'CCTV & Alarm Systems', 'Commercial Security Systems'],
+  'well drilling & pump repair': ['Water Well Drilling', 'Well Pump Repair & Service', 'Water Filtration & Well Service'],
+  'mobile car wash & detailing': ['Mobile Auto Detailing', 'Mobile Car Wash Service', 'Ceramic Coating & Paint Correction'],
+  'pergola, gazebo & awning builder': ['Pergola Builder', 'Custom Gazebo Construction', 'Patio Awning Installation'],
+  'bail bonds service': ['24 Hour Bail Bonds', 'Bail Bondsman', 'Licensed Bail Bonds Agent'],
+  'hvac duct cleaning & sanitizing': ['Air Duct Cleaning', 'Duct Sanitizing Service', 'HVAC Air Duct Specialists'],
+  'commercial carpet & floor cleaning': ['Commercial Carpet Cleaning', 'Commercial Floor Waxing & Cleaning', 'Janitorial Floor Care'],
 };
+
+// City Inner Quadrants and Prominent Neighborhoods (100% within city limits)
+const CITY_INNER_NEIGHBORHOODS = {
+  dallas: ['North Dallas', 'Oak Cliff', 'East Dallas', 'Downtown', 'Uptown', 'Lake Highlands', 'Preston Hollow', 'Oak Lawn', 'South Dallas'],
+  houston: ['The Heights', 'Downtown', 'Montrose', 'Midtown', 'Westchase', 'Galleria', 'Northside', 'Medical Center', 'East End'],
+  austin: ['South Congress', 'Downtown', 'East Austin', 'North Austin', 'South Austin', 'Barton Hills', 'Mueller', 'Hyde Park'],
+  'san antonio': ['Downtown', 'Stone Oak', 'Alamo Heights', 'North Central', 'Southtown', 'West Side', 'Medical Center'],
+  'fort worth': ['Downtown', 'Northside', 'Southside', 'Cultural District', 'West 7th', 'Stockyards', 'TCU Area'],
+  'los angeles': ['Downtown LA', 'Hollywood', 'Westwood', 'Silver Lake', 'North Hollywood', 'Van Nuys', 'San Pedro', 'Encino'],
+  chicago: ['Loop', 'Lincoln Park', 'Wicker Park', 'Logan Square', 'Hyde Park', 'Lakeview', 'Bridgeport', 'West Loop'],
+  phoenix: ['Downtown Phoenix', 'Arcadia', 'Biltmore', 'Ahwatukee', 'North Mountain', 'Maryvale', 'Paradise Valley Village'],
+  miami: ['Downtown Miami', 'Brickell', 'Little Havana', 'Wynwood', 'Coconut Grove', 'Design District', 'Overtown'],
+  atlanta: ['Downtown', 'Midtown', 'Buckhead', 'Inman Park', 'Old Fourth Ward', 'West End', 'Virginia-Highland'],
+  denver: ['Downtown', 'Capitol Hill', 'Cherry Creek', 'LoDo', 'Highland', 'Five Points', 'Wash Park'],
+  seattle: ['Downtown', 'Capitol Hill', 'Ballard', 'Queen Anne', 'Fremont', 'West Seattle', 'South Lake Union'],
+  'new york': ['Manhattan', 'Brooklyn', 'Queens', 'Bronx', 'Staten Island', 'Harlem', 'Astoria', 'Williamsburg'],
+  'san diego': ['Downtown', 'North Park', 'Pacific Beach', 'Hillcrest', 'La Jolla', 'Ocean Beach', 'Point Loma'],
+  'las vegas': ['Downtown', 'Summerlin', 'The Strip area', 'Southwest', 'Northwest', 'Centennial Hills'],
+  orlando: ['Downtown', 'Lake Eola', 'College Park', 'Baldwin Park', 'MetroWest', 'Thornton Park'],
+  tampa: ['Downtown', 'Ybor City', 'Hyde Park', 'Seminole Heights', 'Tampa Palms', 'Westshore'],
+  charlotte: ['Uptown', 'South End', 'NoDa', 'Dilworth', 'Plaza Midwood', 'Ballantyne', 'University City'],
+  columbus: ['Short North', 'German Village', 'Clintonville', 'Downtown', 'Franklinton', 'Arena District'],
+  indianapolis: ['Downtown', 'Broad Ripple', 'Fountain Square', 'Mass Ave', 'Irvington', 'Northside'],
+  nashville: ['Downtown', 'The Gulch', 'East Nashville', 'Music Row', 'Germantown', 'Green Hills'],
+  jacksonville: ['Downtown', 'Riverside', 'San Marco', 'Avondale', 'Southside', 'Northside'],
+  'san jose': ['Downtown', 'Willow Glen', 'Rose Garden', 'Almaden Valley', 'West San Jose', 'North San Jose'],
+  detroit: ['Downtown', 'Midtown', 'Corktown', 'Eastern Market', 'Woodbridge', 'New Center'],
+  philadelphia: ['Center City', 'South Philly', 'Fishtown', 'Northern Liberties', 'University City', 'Chestnut Hill'],
+  boston: ['Downtown', 'Back Bay', 'South End', 'Beacon Hill', 'North End', 'Dorchester', 'South Boston'],
+  baltimore: ['Inner Harbor', 'Fells Point', 'Canton', 'Federal Hill', 'Mount Vernon', 'Hampden'],
+  milwaukee: ['Downtown', 'Historic Third Ward', 'Bay View', 'East Side', 'Walker\'s Point', 'Riverwest'],
+  'kansas city': ['Downtown', 'Crossroads', 'Country Club Plaza', 'Westport', 'River Market', 'Brookside'],
+  raleigh: ['Downtown', 'North Hills', 'Cameron Village', 'Glenwood South', 'Oakwood', 'Five Points'],
+  'salt lake city': ['Downtown', 'Sugar House', 'The Avenues', 'Central City', 'Capitol Hill', 'Rose Park'],
+  'oklahoma city': ['Downtown', 'Bricktown', 'Midtown', 'Paseo', 'Plaza District', 'Nichols Hills area'],
+};
+
+// Generates targeted, 100% same-city & same-trade multi-query scan list
+function buildDeepQueries(category, location) {
+  const cleanLoc = location.replace(/,\s*USA$/i, '').trim();
+  const cityParts = cleanLoc.split(',').map((s) => s.trim());
+  const cityName = cityParts[0];
+  const stateCode = cityParts[1] || '';
+  const lowerCity = cityName.toLowerCase();
+  const lowerCat = category.toLowerCase().trim();
+
+  const queries = [];
+  const added = new Set();
+  function addQ(q) {
+    const clean = q.trim();
+    if (clean && !added.has(clean.toLowerCase())) {
+      added.add(clean.toLowerCase());
+      queries.push(clean);
+    }
+  }
+
+  // 1. Primary exact category query
+  addQ(`${category} in ${cleanLoc}, USA`);
+
+  // 2. High-intent trade variations within the exact same city
+  const matchedSynonyms = CATEGORY_TRADE_SYNONYMS[lowerCat] || [];
+  for (const syn of matchedSynonyms.slice(0, 3)) {
+    addQ(`${syn} in ${cleanLoc}, USA`);
+  }
+
+  // If no custom synonyms found, use universal trade qualifiers
+  if (matchedSynonyms.length === 0) {
+    addQ(`Residential ${category} in ${cleanLoc}, USA`);
+    addQ(`Commercial ${category} in ${cleanLoc}, USA`);
+    addQ(`${category} repair in ${cleanLoc}, USA`);
+  }
+
+  // 3. Inner City Quadrants & Neighborhoods (100% within city limits)
+  const innerAreas = CITY_INNER_NEIGHBORHOODS[lowerCity] || [
+    'Downtown',
+    'North',
+    'South',
+    'East',
+    'West',
+  ];
+
+  for (const area of innerAreas.slice(0, 6)) {
+    if (area.toLowerCase().includes(lowerCity)) {
+      addQ(`${category} in ${area}, ${stateCode || 'USA'}`);
+    } else {
+      addQ(`${category} in ${area} ${cityName}, ${stateCode || 'USA'}`);
+    }
+  }
+
+  // 4. Sub-local trade combinations
+  if (matchedSynonyms.length > 0) {
+    addQ(`${matchedSynonyms[0]} in North ${cityName}, ${stateCode || 'USA'}`);
+    addQ(`${matchedSynonyms[0]} in South ${cityName}, ${stateCode || 'USA'}`);
+  }
+
+  // 5. Fallback independent & local contractor queries
+  addQ(`Independent ${category} in ${cleanLoc}, USA`);
+  addQ(`Local ${category} contractor in ${cleanLoc}, USA`);
+
+  return queries;
+}
 
 async function scrapeGoogleMaps(category, location, ws, seenNames) {
   const executablePath = getBrowserExecutable();
@@ -369,30 +486,8 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
     return [];
   }
 
-  const cleanLoc = location.replace(/,\s*USA$/i, '').trim();
-  const cityParts = cleanLoc.split(',').map((s) => s.trim());
-  const cityName = cityParts[0];
-  const stateCode = cityParts[1] || '';
-
-  // Smart High-Volume Query Generation: Core metro + suburbs + trade variations
-  const queriesToRun = [
-    `${category} in ${cleanLoc}, USA`,
-    `Independent ${category} in ${cleanLoc}, USA`,
-    `Local ${category} contractor in ${cleanLoc}, USA`,
-    `Family owned ${category} in ${cleanLoc}, USA`,
-    `Affordable ${category} in ${cleanLoc}, USA`,
-  ];
-
-  const lowerCity = cityName.toLowerCase();
-  const suburbs = METRO_SUBURBS[lowerCity];
-  if (suburbs && suburbs.length > 0) {
-    for (const sub of suburbs) {
-      queriesToRun.push(`${category} in ${sub}, ${stateCode || 'USA'}`);
-    }
-  } else {
-    queriesToRun.push(`${category} services in ${cleanLoc}, USA`);
-    queriesToRun.push(`${category} near ${cleanLoc}, USA`);
-  }
+  // Multi-Locality & Trade Synonym Query Engine (100% same city & category)
+  const queriesToRun = buildDeepQueries(category, location);
 
   send(ws, 'status', { message: `🇺🇸 Deep Scanning Google Maps for "${category}" in "${location}"…` });
 
@@ -484,7 +579,9 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
         continue;
       }
 
-      const scrollRounds = 16;
+      let prevExtractedCount = 0;
+      let staleRounds = 0;
+      const scrollRounds = 12;
       for (let round = 0; round < scrollRounds; round++) {
         if (leads.length >= TARGET_LEADS) break;
 
@@ -665,6 +762,15 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
 
           await Promise.all(verifiers.map((v) => verifyWorker(v)));
         }
+
+        // Fast-forward to next sub-query if feed is exhausted
+        if (extracted.length === prevExtractedCount && candidatesToVerify.length === 0) {
+          staleRounds++;
+          if (staleRounds >= 2) break;
+        } else {
+          staleRounds = 0;
+        }
+        prevExtractedCount = extracted.length;
 
         // Scroll feed down
         await page.evaluate(() => {

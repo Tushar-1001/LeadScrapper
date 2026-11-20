@@ -21,6 +21,12 @@ yarn-error.log*
 Thumbs.db
 .vscode/
 .idea/
+.cursor/
+.github/
+.windsurfrules
+.mcp.json
+AGENT.md
+CLAUDE.md
 
 # Agent & Brain temp folders
 .gemini/
