@@ -378,43 +378,43 @@ const CATEGORY_TRADE_SYNONYMS = {
   'commercial carpet & floor cleaning': ['Commercial Carpet Cleaning', 'Commercial Floor Waxing & Cleaning', 'Janitorial Floor Care'],
 };
 
-// City Inner Quadrants and Prominent Neighborhoods (100% within city limits)
-const CITY_INNER_NEIGHBORHOODS = {
-  dallas: ['North Dallas', 'Oak Cliff', 'East Dallas', 'Downtown', 'Uptown', 'Lake Highlands', 'Preston Hollow', 'Oak Lawn', 'South Dallas'],
-  houston: ['The Heights', 'Downtown', 'Montrose', 'Midtown', 'Westchase', 'Galleria', 'Northside', 'Medical Center', 'East End'],
-  austin: ['South Congress', 'Downtown', 'East Austin', 'North Austin', 'South Austin', 'Barton Hills', 'Mueller', 'Hyde Park'],
-  'san antonio': ['Downtown', 'Stone Oak', 'Alamo Heights', 'North Central', 'Southtown', 'West Side', 'Medical Center'],
-  'fort worth': ['Downtown', 'Northside', 'Southside', 'Cultural District', 'West 7th', 'Stockyards', 'TCU Area'],
-  'los angeles': ['Downtown LA', 'Hollywood', 'Westwood', 'Silver Lake', 'North Hollywood', 'Van Nuys', 'San Pedro', 'Encino'],
-  chicago: ['Loop', 'Lincoln Park', 'Wicker Park', 'Logan Square', 'Hyde Park', 'Lakeview', 'Bridgeport', 'West Loop'],
-  phoenix: ['Downtown Phoenix', 'Arcadia', 'Biltmore', 'Ahwatukee', 'North Mountain', 'Maryvale', 'Paradise Valley Village'],
-  miami: ['Downtown Miami', 'Brickell', 'Little Havana', 'Wynwood', 'Coconut Grove', 'Design District', 'Overtown'],
-  atlanta: ['Downtown', 'Midtown', 'Buckhead', 'Inman Park', 'Old Fourth Ward', 'West End', 'Virginia-Highland'],
-  denver: ['Downtown', 'Capitol Hill', 'Cherry Creek', 'LoDo', 'Highland', 'Five Points', 'Wash Park'],
-  seattle: ['Downtown', 'Capitol Hill', 'Ballard', 'Queen Anne', 'Fremont', 'West Seattle', 'South Lake Union'],
-  'new york': ['Manhattan', 'Brooklyn', 'Queens', 'Bronx', 'Staten Island', 'Harlem', 'Astoria', 'Williamsburg'],
-  'san diego': ['Downtown', 'North Park', 'Pacific Beach', 'Hillcrest', 'La Jolla', 'Ocean Beach', 'Point Loma'],
-  'las vegas': ['Downtown', 'Summerlin', 'The Strip area', 'Southwest', 'Northwest', 'Centennial Hills'],
-  orlando: ['Downtown', 'Lake Eola', 'College Park', 'Baldwin Park', 'MetroWest', 'Thornton Park'],
-  tampa: ['Downtown', 'Ybor City', 'Hyde Park', 'Seminole Heights', 'Tampa Palms', 'Westshore'],
-  charlotte: ['Uptown', 'South End', 'NoDa', 'Dilworth', 'Plaza Midwood', 'Ballantyne', 'University City'],
-  columbus: ['Short North', 'German Village', 'Clintonville', 'Downtown', 'Franklinton', 'Arena District'],
-  indianapolis: ['Downtown', 'Broad Ripple', 'Fountain Square', 'Mass Ave', 'Irvington', 'Northside'],
-  nashville: ['Downtown', 'The Gulch', 'East Nashville', 'Music Row', 'Germantown', 'Green Hills'],
-  jacksonville: ['Downtown', 'Riverside', 'San Marco', 'Avondale', 'Southside', 'Northside'],
-  'san jose': ['Downtown', 'Willow Glen', 'Rose Garden', 'Almaden Valley', 'West San Jose', 'North San Jose'],
-  detroit: ['Downtown', 'Midtown', 'Corktown', 'Eastern Market', 'Woodbridge', 'New Center'],
-  philadelphia: ['Center City', 'South Philly', 'Fishtown', 'Northern Liberties', 'University City', 'Chestnut Hill'],
-  boston: ['Downtown', 'Back Bay', 'South End', 'Beacon Hill', 'North End', 'Dorchester', 'South Boston'],
-  baltimore: ['Inner Harbor', 'Fells Point', 'Canton', 'Federal Hill', 'Mount Vernon', 'Hampden'],
-  milwaukee: ['Downtown', 'Historic Third Ward', 'Bay View', 'East Side', 'Walker\'s Point', 'Riverwest'],
-  'kansas city': ['Downtown', 'Crossroads', 'Country Club Plaza', 'Westport', 'River Market', 'Brookside'],
-  raleigh: ['Downtown', 'North Hills', 'Cameron Village', 'Glenwood South', 'Oakwood', 'Five Points'],
-  'salt lake city': ['Downtown', 'Sugar House', 'The Avenues', 'Central City', 'Capitol Hill', 'Rose Park'],
-  'oklahoma city': ['Downtown', 'Bricktown', 'Midtown', 'Paseo', 'Plaza District', 'Nichols Hills area'],
+// Major US Metros and their key suburbs/neighborhoods for deep lead discovery
+const METRO_SUBURBS = {
+  dallas: ['Mesquite', 'Garland', 'Grand Prairie', 'Irving', 'Arlington', 'Carrollton', 'Richardson', 'DeSoto', 'Plano'],
+  houston: ['Pasadena', 'Katy', 'Pearland', 'Sugar Land', 'Spring', 'Conroe', 'Baytown', 'Cypress', 'Tomball'],
+  austin: ['Round Rock', 'Cedar Park', 'Pflugerville', 'Georgetown', 'San Marcos', 'Kyle', 'Buda'],
+  'san antonio': ['New Braunfels', 'Schertz', 'Cibolo', 'Converse', 'Boerne', 'Universal City'],
+  'fort worth': ['North Richland Hills', 'Haltom City', 'Keller', 'Burleson', 'Mansfield', 'Euless', 'Bedford'],
+  'los angeles': ['Glendale', 'Pasadena', 'Torrance', 'Burbank', 'Long Beach', 'Inglewood', 'El Monte', 'Downey'],
+  chicago: ['Cicero', 'Evanston', 'Naperville', 'Aurora', 'Joliet', 'Oak Lawn', 'Berwyn', 'Des Plaines'],
+  phoenix: ['Mesa', 'Chandler', 'Glendale', 'Scottsdale', 'Tempe', 'Peoria', 'Surprise', 'Avondale'],
+  miami: ['Hialeah', 'Coral Gables', 'Homestead', 'Doral', 'Miami Beach', 'Kendall', 'North Miami'],
+  atlanta: ['Marietta', 'Alpharetta', 'Roswell', 'Decatur', 'Sandy Springs', 'Smyrna', 'Duluth', 'Kennesaw'],
+  denver: ['Aurora', 'Lakewood', 'Thornton', 'Arvada', 'Westminster', 'Centennial', 'Littleton'],
+  seattle: ['Bellevue', 'Tacoma', 'Renton', 'Kent', 'Everett', 'Federal Way', 'Kirkland', 'Auburn'],
+  'new york': ['Queens', 'Brooklyn', 'Bronx', 'Staten Island', 'Yonkers', 'New Rochelle', 'Mount Vernon'],
+  'san diego': ['Chula Vista', 'Oceanside', 'Escondido', 'Carlsbad', 'El Cajon', 'Vista', 'San Marcos'],
+  'las vegas': ['Henderson', 'North Las Vegas', 'Paradise', 'Spring Valley', 'Sunrise Manor'],
+  orlando: ['Kissimmee', 'Sanford', 'Altamonte Springs', 'Winter Park', 'Apopka', 'Ocoee'],
+  tampa: ['St. Petersburg', 'Clearwater', 'Brandon', 'Largo', 'Riverview', 'Palm Harbor'],
+  charlotte: ['Concord', 'Gastonia', 'Rock Hill', 'Huntersville', 'Matthews', 'Monroe'],
+  columbus: ['Dublin', 'Westerville', 'Grove City', 'Reynoldsburg', 'Hilliard', 'Gahanna'],
+  indianapolis: ['Carmel', 'Fishers', 'Noblesville', 'Greenwood', 'Lawrence', 'Plainfield'],
+  nashville: ['Franklin', 'Murfreesboro', 'Hendersonville', 'Brentwood', 'Lebanon', 'Smyrna'],
+  jacksonville: ['Jacksonville Beach', 'Orange Park', 'St. Augustine', 'Atlantic Beach'],
+  'san jose': ['Sunnyvale', 'Santa Clara', 'Campbell', 'Milpitas', 'Cupertino', 'Mountain View'],
+  detroit: ['Dearborn', 'Livonia', 'Troy', 'Warren', 'Sterling Heights', 'Westland'],
+  philadelphia: ['Upper Darby', 'Norristown', 'Chester', 'Bensalem', 'Cherry Hill', 'Camden'],
+  boston: ['Cambridge', 'Quincy', 'Newton', 'Somerville', 'Framingham', 'Waltham'],
+  baltimore: ['Towson', 'Columbia', 'Dundalk', 'Glen Burnie', 'Ellicott City'],
+  milwaukee: ['Waukesha', 'West Allis', 'Wauwatosa', 'Greenfield'],
+  'kansas city': ['Overland Park', 'Olathe', 'Lee\'s Summit', 'Independence', 'Shawnee'],
+  raleigh: ['Cary', 'Apex', 'Wake Forest', 'Holly Springs', 'Garner'],
+  'salt lake city': ['West Valley City', 'Provo', 'West Jordan', 'Orem', 'Sandy'],
+  'oklahoma city': ['Norman', 'Edmond', 'Moore', 'Midwest City'],
 };
 
-// Generates targeted, 100% same-city & same-trade multi-query scan list
+// Generates targeted multi-query scan list (Core Metro + Proven Small Business Queries + Suburbs + Trade Synonyms)
 function buildDeepQueries(category, location) {
   const cleanLoc = location.replace(/,\s*USA$/i, '').trim();
   const cityParts = cleanLoc.split(',').map((s) => s.trim());
@@ -433,10 +433,10 @@ function buildDeepQueries(category, location) {
     }
   }
 
-  // 1. Primary exact category query (full deep search in target city)
+  // 1. Core Primary Category Query
   addQ(`${category} in ${cleanLoc}, USA`);
 
-  // 2. High-intent trade variations within the exact same city
+  // 2. High-Intent Trade Synonyms
   let matchedSynonyms = CATEGORY_TRADE_SYNONYMS[lowerCat];
   if (!matchedSynonyms) {
     for (const [key, syns] of Object.entries(CATEGORY_TRADE_SYNONYMS)) {
@@ -446,36 +446,28 @@ function buildDeepQueries(category, location) {
       }
     }
   }
-
   if (matchedSynonyms && matchedSynonyms.length > 0) {
-    for (const syn of matchedSynonyms.slice(0, 3)) {
+    for (const syn of matchedSynonyms.slice(0, 2)) {
       addQ(`${syn} in ${cleanLoc}, USA`);
     }
-  } else {
-    addQ(`Residential ${category} in ${cleanLoc}, USA`);
-    addQ(`Commercial ${category} in ${cleanLoc}, USA`);
-    addQ(`${category} repair in ${cleanLoc}, USA`);
   }
 
-  // 3. Independent & local trade contractors in target city
+  // 3. Proven Small-Business & Independent Contractor Queries (High No-Website Density)
   addQ(`Independent ${category} in ${cleanLoc}, USA`);
-  addQ(`Local ${category} in ${cleanLoc}, USA`);
+  addQ(`Local ${category} contractor in ${cleanLoc}, USA`);
+  addQ(`Family owned ${category} in ${cleanLoc}, USA`);
+  addQ(`Affordable ${category} in ${cleanLoc}, USA`);
 
-  // 4. Inner City Quadrants & Neighborhoods (cleanly formatted with city & state)
-  const innerAreas = CITY_INNER_NEIGHBORHOODS[lowerCity] || [
-    'Downtown',
-    'North',
-    'South',
-    'East',
-    'West',
-  ];
-
-  for (const area of innerAreas.slice(0, 3)) {
-    if (area.toLowerCase().includes(lowerCity)) {
-      addQ(`${category} in ${area}, ${stateCode || 'USA'}`);
-    } else {
-      addQ(`${category} in ${area}, ${cleanLoc}, USA`);
+  // 4. Suburbs / Surrounding Metroplex (Where small independent tradesmen without websites operate)
+  const suburbs = METRO_SUBURBS[lowerCity];
+  if (suburbs && suburbs.length > 0) {
+    for (const sub of suburbs) {
+      addQ(`${category} in ${sub}, ${stateCode || 'USA'}`);
     }
+  } else {
+    addQ(`${category} services in ${cleanLoc}, USA`);
+    addQ(`${category} near ${cleanLoc}, USA`);
+    addQ(`Residential ${category} in ${cleanLoc}, USA`);
   }
 
   return queries;
@@ -774,7 +766,7 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
             feed.scrollTop += 3000;
           }
         });
-        await sleep(650);
+        await sleep(400);
 
         // Break early if Google Maps reached the end of results
         const isEnd = await page.evaluate(() => {
