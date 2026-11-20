@@ -326,58 +326,6 @@ async function verifyCandidatePlace(verifierPage, mapsLink, candidateName, rpcSt
   }
 }
 
-// Category Synonyms & High-Intent Trade Variations for US Local Markets
-const CATEGORY_TRADE_SYNONYMS = {
-  plumber: ['Plumbing Repair', 'Licensed Plumber', 'Residential Plumber', 'Emergency Plumbing', 'Commercial Plumber', 'Drain Cleaning'],
-  plumbing: ['Plumbing Repair', 'Licensed Plumber', 'Residential Plumber', 'Emergency Plumbing', 'Commercial Plumber'],
-  'roofing contractor': ['Roof Repair & Replacement', 'Residential Roofing', 'Commercial Roofing', 'Emergency Roof Repair', 'Roofing Services'],
-  roofing: ['Roof Repair & Replacement', 'Residential Roofing', 'Commercial Roofing', 'Emergency Roof Repair'],
-  'hvac contractor': ['AC Repair', 'Heating & Air Conditioning', 'HVAC Repair Service', 'Air Conditioning Contractor', 'Furnace Repair'],
-  'hvac services': ['AC Repair', 'Heating & Air Conditioning', 'HVAC Repair Service', 'Air Conditioning Contractor'],
-  hvac: ['AC Repair', 'Heating & Air Conditioning', 'HVAC Repair Service', 'Air Conditioning Contractor'],
-  electrician: ['Electrical Repair', 'Licensed Electrician', 'Residential Electrician', 'Emergency Electrician', 'Commercial Electrician'],
-  electrical: ['Electrical Repair', 'Licensed Electrician', 'Residential Electrician', 'Emergency Electrician'],
-  'landscaping & lawn care': ['Lawn Care Service', 'Lawn Mowing & Maintenance', 'Residential Landscaping', 'Tree Trimming & Removal', 'Yard Maintenance'],
-  landscaping: ['Lawn Care Service', 'Lawn Mowing & Maintenance', 'Residential Landscaping', 'Tree Trimming & Removal'],
-  'lawn care': ['Lawn Care Service', 'Lawn Mowing & Maintenance', 'Yard Clean Up', 'Lawn Treatment'],
-  'general contractor': ['Home Remodeling Contractor', 'Home Renovation', 'Kitchen & Bath Remodeling', 'Residential Contractor'],
-  'home remodeling & renovation': ['Kitchen Remodeling', 'Bathroom Remodeling', 'Home Renovation Contractor', 'Home Improvement'],
-  'kitchen & bathroom remodeling': ['Kitchen Remodeler', 'Bathroom Remodeler', 'Cabinet & Tile Installation'],
-  painter: ['House Painting', 'Interior & Exterior Painting', 'Residential Painter', 'Commercial Painter'],
-  painting: ['House Painting', 'Interior & Exterior Painting', 'Residential Painter', 'Commercial Painter'],
-  'towing service': ['Emergency Towing', '24 Hour Tow Truck', 'Roadside Assistance', 'Wrecker Service'],
-  towing: ['Emergency Towing', '24 Hour Tow Truck', 'Roadside Assistance', 'Wrecker Service'],
-  'auto repair': ['Auto Mechanic', 'Brake Repair & Service', 'Transmission Repair', 'Engine Diagnostic & Repair'],
-  'auto repair & mechanic': ['Auto Mechanic', 'Brake Repair & Service', 'Transmission Repair', 'Car Maintenance'],
-  dentist: ['Family Dentistry', 'Emergency Dentist', 'Dental Clinic', 'Cosmetic Dentist'],
-  'pest control': ['Exterminator Service', 'Termite Control', 'Pest Extermination', 'Bed Bug Removal'],
-  locksmith: ['Emergency Locksmith', '24 Hour Locksmith', 'Car Key Replacement', 'Mobile Locksmith'],
-  'carpet cleaning': ['Carpet & Upholstery Cleaning', 'Steam Cleaning', 'Commercial Carpet Cleaning', 'Rug Cleaning'],
-  'pressure washing': ['Power Washing', 'Driveway & House Washing', 'Commercial Pressure Washing', 'Roof Cleaning'],
-  'tree service': ['Tree Removal', 'Tree Trimming & Pruning', 'Stump Grinding', 'Emergency Tree Service'],
-  'fence contractor': ['Fence Installation', 'Wood & Vinyl Fencing', 'Fence Repair Contractor'],
-  'concrete contractor': ['Concrete Flatwork & Driveways', 'Stamped Concrete', 'Foundation & Patio Concrete'],
-  'epoxy flooring & garage coating': ['Garage Epoxy Flooring', 'Commercial Epoxy Coating', 'Concrete Polishing & Epoxy'],
-  'septic tank pumping & repair': ['Septic Pumping', 'Septic Tank Cleaning', 'Septic System Repair'],
-  'chimney sweep & fireplace repair': ['Chimney Inspection & Cleaning', 'Fireplace Repair', 'Chimney Cap Installation'],
-  'asphalt paving & sealcoating': ['Driveway Paving', 'Asphalt Sealcoating', 'Parking Lot Paving'],
-  'dumpster rental & waste management': ['Roll Off Dumpster Rental', 'Commercial Waste Management', 'Junk Removal & Dumpsters'],
-  'stump grinding & tree removal': ['Stump Grinding Service', 'Tree Removal Specialist', 'Emergency Tree Cutting'],
-  'solar panel cleaning & maintenance': ['Solar Panel Cleaning', 'Solar Panel Maintenance & Repair', 'Solar System Service'],
-  'crawl space & basement waterproofing': ['Basement Waterproofing', 'Crawl Space Encapsulation', 'Foundation Waterproofing'],
-  'appliance installation & repair': ['Appliance Repair Service', 'Refrigerator & Washer Repair', 'Commercial Appliance Repair'],
-  'cabinet refacing & custom cabinets': ['Cabinet Refacing', 'Custom Kitchen Cabinets', 'Cabinet Makers & Installers'],
-  'dryer vent cleaning service': ['Dryer Vent Cleaning', 'Air Duct & Dryer Vent Service', 'Commercial Dryer Vent Cleaning'],
-  'gutter guard & leaf filter installation': ['Gutter Guard Installation', 'Seamless Gutter Installation', 'Gutter Cleaning & Guards'],
-  'security camera & alarm installation': ['Security Camera Installation', 'CCTV & Alarm Systems', 'Commercial Security Systems'],
-  'well drilling & pump repair': ['Water Well Drilling', 'Well Pump Repair & Service', 'Water Filtration & Well Service'],
-  'mobile car wash & detailing': ['Mobile Auto Detailing', 'Mobile Car Wash Service', 'Ceramic Coating & Paint Correction'],
-  'pergola, gazebo & awning builder': ['Pergola Builder', 'Custom Gazebo Construction', 'Patio Awning Installation'],
-  'bail bonds service': ['24 Hour Bail Bonds', 'Bail Bondsman', 'Licensed Bail Bonds Agent'],
-  'hvac duct cleaning & sanitizing': ['Air Duct Cleaning', 'Duct Sanitizing Service', 'HVAC Air Duct Specialists'],
-  'commercial carpet & floor cleaning': ['Commercial Carpet Cleaning', 'Commercial Floor Waxing & Cleaning', 'Janitorial Floor Care'],
-};
-
 // Major US Metros and their key suburbs/neighborhoods for deep lead discovery
 const METRO_SUBURBS = {
   dallas: ['Mesquite', 'Garland', 'Grand Prairie', 'Irving', 'Arlington', 'Carrollton', 'Richardson', 'DeSoto', 'Plano'],
@@ -414,65 +362,6 @@ const METRO_SUBURBS = {
   'oklahoma city': ['Norman', 'Edmond', 'Moore', 'Midwest City'],
 };
 
-// Generates targeted multi-query scan list (Core Metro + Proven Small Business Queries + Suburbs + Trade Synonyms)
-function buildDeepQueries(category, location) {
-  const cleanLoc = location.replace(/,\s*USA$/i, '').trim();
-  const cityParts = cleanLoc.split(',').map((s) => s.trim());
-  const cityName = cityParts[0];
-  const stateCode = cityParts[1] || '';
-  const lowerCity = cityName.toLowerCase();
-  const lowerCat = category.toLowerCase().trim();
-
-  const queries = [];
-  const added = new Set();
-  function addQ(q) {
-    const clean = q.trim();
-    if (clean && !added.has(clean.toLowerCase())) {
-      added.add(clean.toLowerCase());
-      queries.push(clean);
-    }
-  }
-
-  // 1. Core Primary Category Query
-  addQ(`${category} in ${cleanLoc}, USA`);
-
-  // 2. High-Intent Trade Synonyms
-  let matchedSynonyms = CATEGORY_TRADE_SYNONYMS[lowerCat];
-  if (!matchedSynonyms) {
-    for (const [key, syns] of Object.entries(CATEGORY_TRADE_SYNONYMS)) {
-      if (lowerCat.includes(key) || key.includes(lowerCat)) {
-        matchedSynonyms = syns;
-        break;
-      }
-    }
-  }
-  if (matchedSynonyms && matchedSynonyms.length > 0) {
-    for (const syn of matchedSynonyms.slice(0, 2)) {
-      addQ(`${syn} in ${cleanLoc}, USA`);
-    }
-  }
-
-  // 3. Proven Small-Business & Independent Contractor Queries (High No-Website Density)
-  addQ(`Independent ${category} in ${cleanLoc}, USA`);
-  addQ(`Local ${category} contractor in ${cleanLoc}, USA`);
-  addQ(`Family owned ${category} in ${cleanLoc}, USA`);
-  addQ(`Affordable ${category} in ${cleanLoc}, USA`);
-
-  // 4. Suburbs / Surrounding Metroplex (Where small independent tradesmen without websites operate)
-  const suburbs = METRO_SUBURBS[lowerCity];
-  if (suburbs && suburbs.length > 0) {
-    for (const sub of suburbs) {
-      addQ(`${category} in ${sub}, ${stateCode || 'USA'}`);
-    }
-  } else {
-    addQ(`${category} services in ${cleanLoc}, USA`);
-    addQ(`${category} near ${cleanLoc}, USA`);
-    addQ(`Residential ${category} in ${cleanLoc}, USA`);
-  }
-
-  return queries;
-}
-
 async function scrapeGoogleMaps(category, location, ws, seenNames) {
   const executablePath = getBrowserExecutable();
   if (!executablePath) {
@@ -480,8 +369,30 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
     return [];
   }
 
-  // Multi-Locality & Trade Synonym Query Engine (100% same city & category)
-  const queriesToRun = buildDeepQueries(category, location);
+  const cleanLoc = location.replace(/,\s*USA$/i, '').trim();
+  const cityParts = cleanLoc.split(',').map((s) => s.trim());
+  const cityName = cityParts[0];
+  const stateCode = cityParts[1] || '';
+
+  // Smart High-Volume Query Generation: Core metro + suburbs + trade variations
+  const queriesToRun = [
+    `${category} in ${cleanLoc}, USA`,
+    `Independent ${category} in ${cleanLoc}, USA`,
+    `Local ${category} contractor in ${cleanLoc}, USA`,
+    `Family owned ${category} in ${cleanLoc}, USA`,
+    `Affordable ${category} in ${cleanLoc}, USA`,
+  ];
+
+  const lowerCity = cityName.toLowerCase();
+  const suburbs = METRO_SUBURBS[lowerCity];
+  if (suburbs && suburbs.length > 0) {
+    for (const sub of suburbs) {
+      queriesToRun.push(`${category} in ${sub}, ${stateCode || 'USA'}`);
+    }
+  } else {
+    queriesToRun.push(`${category} services in ${cleanLoc}, USA`);
+    queriesToRun.push(`${category} near ${cleanLoc}, USA`);
+  }
 
   send(ws, 'status', { message: `🇺🇸 Deep Scanning Google Maps for "${category}" in "${location}"…` });
 
@@ -1160,6 +1071,24 @@ function drawPinIcon(doc, x, y, color = '#00E599') {
   doc.restore();
 }
 
+function drawMapIcon(doc, x, y, color = '#00E599') {
+  doc.save();
+  doc.moveTo(x + 1, y + 2.5)
+    .lineTo(x + 4, y + 1)
+    .lineTo(x + 7, y + 2.5)
+    .lineTo(x + 10, y + 1)
+    .lineTo(x + 10, y + 8)
+    .lineTo(x + 7, y + 9.5)
+    .lineTo(x + 4, y + 8)
+    .lineTo(x + 1, y + 9.5)
+    .closePath()
+    .lineWidth(1)
+    .stroke(color);
+  doc.moveTo(x + 4, y + 1).lineTo(x + 4, y + 8).lineWidth(0.8).stroke(color);
+  doc.moveTo(x + 7, y + 2.5).lineTo(x + 7, y + 9.5).lineWidth(0.8).stroke(color);
+  doc.restore();
+}
+
 function drawPhoneIcon(doc, x, y, color = '#00E599') {
   doc.save();
   doc.roundedRect(x + 1, y + 1, 6, 8, 1).lineWidth(1).stroke(color);
@@ -1245,80 +1174,43 @@ function buildPDF(leads, category, location, dateStr, partNum, totalParts) {
 
     doc.font('Helvetica-Bold').fontSize(6.5).fillColor('#94A3B8')
       .text('F I N D   •   V E R I F Y   •   G R O W', contentX + 37, 46);
-
-    const rightX = contentX + contentWidth - 150;
-    doc.moveTo(rightX - 12, 26).lineTo(rightX - 12, 54).lineWidth(1).stroke('#1E293B');
-
-    doc.font('Helvetica-Bold').fontSize(8).fillColor('#E2E8F0')
-      .text('INTELLIGENCE REPORT', rightX, 29, { width: 150, align: 'left' });
-    doc.font('Helvetica').fontSize(7).fillColor('#00E599')
-      .text(`PART ${partNum} OF ${totalParts}`, rightX, 42, { width: 150, align: 'left' });
   };
 
   const renderHeroSection = (totalLeads) => {
-    const heroY = 74;
-
-    // Verified Leads Pill
-    const pillW = 82;
-    const pillH = 15;
-    doc.roundedRect(contentX, heroY, pillW, pillH, 7.5).fill('#059669');
-    doc.font('Helvetica-Bold').fontSize(6.5).fillColor('#FFFFFF')
-      .text('VERIFIED LEADS', contentX, heroY + 4, { width: pillW, align: 'center' });
+    const heroY = 72;
 
     // Headline
     doc.font('Helvetica-Bold').fontSize(22).fillColor('#FFFFFF')
-      .text('HIGH-INTENT LEADS', contentX, heroY + 20);
-
-    // Subtitle
-    doc.font('Helvetica-Bold').fontSize(11).fillColor('#00E599')
-      .text('(ZERO WEBSITE GUARANTEED)', contentX, heroY + 47);
+      .text('HIGH-INTENT LEADS', contentX, heroY);
 
     // Description
-    doc.font('Helvetica').fontSize(7.5).fillColor('#94A3B8')
-      .text('Handpicked & verified business leads with real contact details, so you can reach the right prospects, faster.', contentX, heroY + 63, { width: 310, lineGap: 2 });
+    doc.font('Helvetica').fontSize(8).fillColor('#94A3B8')
+      .text('Handpicked & verified business leads with real contact details, so you can reach the right prospects, faster.', contentX, heroY + 28, { width: 310, lineGap: 2.5 });
 
     // Right Stat Card
     const cardW = 188;
-    const cardH = 88;
+    const cardH = 48;
     const cardX = contentX + contentWidth - cardW;
-    const cardY = heroY - 4;
+    const cardY = heroY;
 
     doc.roundedRect(cardX, cardY, cardW, cardH, 8).fill('#081125');
     doc.roundedRect(cardX, cardY, cardW, cardH, 8).lineWidth(1).stroke('#1E293B');
 
     // Users icon shape
     doc.save();
-    doc.circle(cardX + 24, cardY + 22, 5).lineWidth(1.2).stroke('#00E599');
-    doc.arc(cardX + 24, cardY + 36, 9, Math.PI, 0, false).lineWidth(1.2).stroke('#00E599');
+    doc.circle(cardX + 24, cardY + 20, 5).lineWidth(1.2).stroke('#00E599');
+    doc.arc(cardX + 24, cardY + 34, 9, Math.PI, 0, false).lineWidth(1.2).stroke('#00E599');
     doc.restore();
 
-    doc.font('Helvetica-Bold').fontSize(26).fillColor('#00E599')
-      .text(String(totalLeads), cardX + 44, cardY + 14);
+    doc.font('Helvetica-Bold').fontSize(24).fillColor('#00E599')
+      .text(String(totalLeads), cardX + 44, cardY + 12);
 
-    doc.font('Helvetica-Bold').fontSize(7.5).fillColor('#E2E8F0')
-      .text('VERIFIED LEADS', cardX + 46 + (String(totalLeads).length * 16), cardY + 23);
-
-    doc.moveTo(cardX + 14, cardY + 49).lineTo(cardX + cardW - 14, cardY + 49).lineWidth(0.5).stroke('#1E293B');
-
-    // Left Sub-metric
-    drawPinIcon(doc, cardX + 32, cardY + 54, '#00E599');
-    doc.font('Helvetica-Bold').fontSize(11).fillColor('#FFFFFF')
-      .text('0', cardX + 16, cardY + 64, { width: 50, align: 'center' });
-    doc.font('Helvetica').fontSize(5.5).fillColor('#94A3B8')
-      .text('WEBSITES\nREQUIRED', cardX + 10, cardY + 76, { width: 62, align: 'center', lineGap: 1 });
-
-    doc.moveTo(cardX + cardW / 2, cardY + 54).lineTo(cardX + cardW / 2, cardY + 84).lineWidth(0.5).stroke('#1E293B');
-
-    // Right Sub-metric
-    drawPinIcon(doc, cardX + cardW / 2 + 36, cardY + 54, '#00E599');
-    doc.font('Helvetica-Bold').fontSize(11).fillColor('#FFFFFF')
-      .text(String(marketsCount), cardX + cardW / 2 + 20, cardY + 64, { width: 50, align: 'center' });
-    doc.font('Helvetica').fontSize(5.5).fillColor('#94A3B8')
-      .text('MARKETS\nCOVERED', cardX + cardW / 2 + 14, cardY + 76, { width: 62, align: 'center', lineGap: 1 });
+    doc.font('Helvetica-Bold').fontSize(8).fillColor('#E2E8F0')
+      .text('VERIFIED LEADS', cardX + 46 + (String(totalLeads).length * 15), cardY + 21);
   };
 
   const renderMetadataPill = () => {
-    const metaY = 168;
+    const metaY = 136;
     const metaH = 28;
 
     doc.roundedRect(contentX, metaY, contentWidth, metaH, 6).fill('#081125');
@@ -1354,43 +1246,44 @@ function buildPDF(leads, category, location, dateStr, partNum, totalParts) {
       .text(dateStr, contentX + (colW * 2) + 27, metaY + 15, { width: colW - 35, lineBreak: false });
   };
 
-  const colWidths = [24, 215, 110, 95, 95.28];
+  const colWidths = [24, 210, 105, 105, 95.28];
 
   const renderTableHeader = (currY) => {
-    doc.rect(contentX, currY, contentWidth, 18).fill('#091428');
-    doc.rect(contentX, currY + 17.5, contentWidth, 0.5).fill('#13203C');
+    const headerH = 20;
+    doc.rect(contentX, currY, contentWidth, headerH).fill('#091428');
+    doc.rect(contentX, currY + headerH - 0.5, contentWidth, 0.5).fill('#13203C');
 
     let x = contentX;
 
     // #
-    doc.font('Helvetica-Bold').fontSize(7).fillColor('#00E599')
-      .text('#', x, currY + 5, { width: colWidths[0], align: 'center' });
+    doc.font('Helvetica-Bold').fontSize(7.5).fillColor('#00E599')
+      .text('#', x, currY + 6, { width: colWidths[0], align: 'center' });
     x += colWidths[0];
 
     // Business Name & Address
-    drawCheckBadge(doc, x + 2, currY + 3);
-    doc.font('Helvetica-Bold').fontSize(6.5).fillColor('#00E599')
-      .text('BUSINESS NAME & ADDRESS', x + 15, currY + 5, { width: colWidths[1] - 18 });
+    drawCheckBadge(doc, x + 2, currY + 4);
+    doc.font('Helvetica-Bold').fontSize(7.5).fillColor('#00E599')
+      .text('BUSINESS NAME & ADDRESS', x + 16, currY + 6, { width: colWidths[1] - 18 });
     x += colWidths[1];
 
     // Phone Number
-    drawPhoneIcon(doc, x + 4, currY + 4, '#00E599');
-    doc.font('Helvetica-Bold').fontSize(6.5).fillColor('#00E599')
-      .text('PHONE NUMBER', x + 16, currY + 5, { width: colWidths[2] - 18 });
+    drawPhoneIcon(doc, x + 4, currY + 5, '#00E599');
+    doc.font('Helvetica-Bold').fontSize(7.5).fillColor('#00E599')
+      .text('PHONE NUMBER', x + 17, currY + 6, { width: colWidths[2] - 18 });
     x += colWidths[2];
 
     // Reputation
-    drawStar(doc, x + 7, currY + 8, 5, 3.5, 1.8, '#00E599');
-    doc.font('Helvetica-Bold').fontSize(6.5).fillColor('#00E599')
-      .text('REPUTATION', x + 16, currY + 5, { width: colWidths[3] - 18 });
+    drawStar(doc, x + 6, currY + 9, 5, 3.6, 1.8, '#00E599');
+    doc.font('Helvetica-Bold').fontSize(7.5).fillColor('#00E599')
+      .text('REPUTATION', x + 17, currY + 6, { width: colWidths[3] - 18 });
     x += colWidths[3];
 
     // Google Maps
-    drawPinIcon(doc, x + 4, currY + 4, '#00E599');
-    doc.font('Helvetica-Bold').fontSize(6.5).fillColor('#00E599')
-      .text('GOOGLE MAPS', x + 14, currY + 5, { width: colWidths[4] - 16 });
+    drawMapIcon(doc, x + 4, currY + 5, '#00E599');
+    doc.font('Helvetica-Bold').fontSize(7.5).fillColor('#00E599')
+      .text('GOOGLE MAPS', x + 18, currY + 6, { width: colWidths[4] - 20 });
 
-    return currY + 18;
+    return currY + headerH;
   };
 
   const renderTrustFooter = (footerY) => {
@@ -1439,10 +1332,10 @@ function buildPDF(leads, category, location, dateStr, partNum, totalParts) {
   renderTopBar();
   renderHeroSection(leads.length);
   renderMetadataPill();
-  let tableY = renderTableHeader(202);
+  let tableY = renderTableHeader(176);
 
-  const rowHeight = 22;
-  const maxTableY = 740;
+  const rowHeight = 25;
+  const maxTableY = 735;
 
   leads.forEach((lead, idx) => {
     if (tableY + rowHeight > maxTableY) {
@@ -1461,52 +1354,51 @@ function buildPDF(leads, category, location, dateStr, partNum, totalParts) {
     let x = contentX;
 
     // Rank
-    doc.font('Helvetica-Bold').fontSize(7.5).fillColor('#FFFFFF')
-      .text(String(idx + 1), x, tableY + 6, { width: colWidths[0], align: 'center' });
+    doc.font('Helvetica-Bold').fontSize(8.5).fillColor('#FFFFFF')
+      .text(String(idx + 1), x, tableY + 8, { width: colWidths[0], align: 'center' });
     x += colWidths[0];
 
     // Business Name & Address
     const hasAddress = Boolean(lead.address && lead.address !== '—');
-    const nameY = hasAddress ? tableY + 3 : tableY + 6;
-    doc.font('Helvetica-Bold').fontSize(7).fillColor('#FFFFFF')
+    const nameY = hasAddress ? tableY + 4 : tableY + 8;
+    doc.font('Helvetica-Bold').fontSize(8.5).fillColor('#FFFFFF')
       .text(lead.name || '—', x + 4, nameY, { width: colWidths[1] - 8, lineBreak: false });
 
     if (hasAddress) {
-      doc.font('Helvetica').fontSize(5.5).fillColor('#64748B')
-        .text(lead.address, x + 4, tableY + 12, { width: colWidths[1] - 8, lineBreak: false });
+      doc.font('Helvetica').fontSize(6.5).fillColor('#64748B')
+        .text(lead.address, x + 4, tableY + 15, { width: colWidths[1] - 8, lineBreak: false });
     }
     x += colWidths[1];
 
     // Phone Number
     const phoneStr = lead.phone ? lead.phone.trim() : '—';
-    doc.font('Helvetica').fontSize(7).fillColor(lead.phone ? '#E2E8F0' : '#475569')
-      .text(phoneStr, x + 4, tableY + 6, { width: colWidths[2] - 8, lineBreak: false });
+    doc.font('Helvetica').fontSize(8.5).fillColor(lead.phone ? '#E2E8F0' : '#475569')
+      .text(phoneStr, x + 4, tableY + 8, { width: colWidths[2] - 8, lineBreak: false });
     x += colWidths[2];
 
-    // Reputation: Green Star + 4.9 (97 revs)
+    // Reputation: Green Star + 4.9 (80 reviews)
     const revCount = parseInt(String(lead.reviews || '0').replace(/[^\d]/g, ''), 10) || 0;
     const ratingStr = lead.rating && lead.rating !== '—' ? lead.rating : '5.0';
 
-    drawStar(doc, x + 7, tableY + 9, 5, 3.2, 1.6, '#00E599');
-    doc.font('Helvetica-Bold').fontSize(7).fillColor('#FFFFFF')
-      .text(ratingStr, x + 14, tableY + 6, { continued: true });
-    doc.font('Helvetica').fontSize(6).fillColor('#64748B')
-      .text(revCount > 0 ? ` (${revCount} revs)` : '');
+    drawStar(doc, x + 6, tableY + 12, 5, 3.6, 1.8, '#00E599');
+    doc.font('Helvetica-Bold').fontSize(8.5).fillColor('#FFFFFF')
+      .text(ratingStr, x + 15, tableY + 8, { continued: true });
+    doc.font('Helvetica').fontSize(7).fillColor('#64748B')
+      .text(revCount > 0 ? (revCount === 1 ? ' (1 review)' : ` (${revCount} reviews)`) : '');
     x += colWidths[3];
 
-    // Google Maps Link: Pin icon + View Profile ->
-    drawPinIcon(doc, x + 4, tableY + 6, '#00E599');
+    // Google Maps Link: View Profile (Icons removed from left and right)
     if (lead.mapsLink) {
-      doc.font('Helvetica-Bold').fontSize(6.5).fillColor('#00E599')
-        .text('View Profile ->', x + 13, tableY + 6, {
-          width: colWidths[4] - 16,
+      doc.font('Helvetica-Bold').fontSize(8).fillColor('#00E599')
+        .text('View Profile', x + 6, tableY + 8, {
+          width: colWidths[4] - 12,
           link: lead.mapsLink,
           underline: true,
           lineBreak: false,
         });
     } else {
-      doc.font('Helvetica').fontSize(6.5).fillColor('#475569')
-        .text('—', x + 13, tableY + 6);
+      doc.font('Helvetica').fontSize(8).fillColor('#475569')
+        .text('—', x + 6, tableY + 8);
     }
 
     tableY += rowHeight;

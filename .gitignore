@@ -21,17 +21,17 @@ yarn-error.log*
 Thumbs.db
 .vscode/
 .idea/
+
+# Agent & Brain temp folders
+.gemini/
+.agents/
+.jetro/
 .cursor/
 .github/
 .windsurfrules
 .mcp.json
 AGENT.md
 CLAUDE.md
-
-# Agent & Brain temp folders
-.gemini/
-.agents/
-.jetro/
 scratch/
 
 # Generated export test files
