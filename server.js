@@ -433,23 +433,35 @@ function buildDeepQueries(category, location) {
     }
   }
 
-  // 1. Primary exact category query
+  // 1. Primary exact category query (full deep search in target city)
   addQ(`${category} in ${cleanLoc}, USA`);
 
   // 2. High-intent trade variations within the exact same city
-  const matchedSynonyms = CATEGORY_TRADE_SYNONYMS[lowerCat] || [];
-  for (const syn of matchedSynonyms.slice(0, 3)) {
-    addQ(`${syn} in ${cleanLoc}, USA`);
+  let matchedSynonyms = CATEGORY_TRADE_SYNONYMS[lowerCat];
+  if (!matchedSynonyms) {
+    for (const [key, syns] of Object.entries(CATEGORY_TRADE_SYNONYMS)) {
+      if (lowerCat.includes(key) || key.includes(lowerCat)) {
+        matchedSynonyms = syns;
+        break;
+      }
+    }
   }
 
-  // If no custom synonyms found, use universal trade qualifiers
-  if (matchedSynonyms.length === 0) {
+  if (matchedSynonyms && matchedSynonyms.length > 0) {
+    for (const syn of matchedSynonyms.slice(0, 3)) {
+      addQ(`${syn} in ${cleanLoc}, USA`);
+    }
+  } else {
     addQ(`Residential ${category} in ${cleanLoc}, USA`);
     addQ(`Commercial ${category} in ${cleanLoc}, USA`);
     addQ(`${category} repair in ${cleanLoc}, USA`);
   }
 
-  // 3. Inner City Quadrants & Neighborhoods (100% within city limits)
+  // 3. Independent & local trade contractors in target city
+  addQ(`Independent ${category} in ${cleanLoc}, USA`);
+  addQ(`Local ${category} in ${cleanLoc}, USA`);
+
+  // 4. Inner City Quadrants & Neighborhoods (cleanly formatted with city & state)
   const innerAreas = CITY_INNER_NEIGHBORHOODS[lowerCity] || [
     'Downtown',
     'North',
@@ -458,23 +470,13 @@ function buildDeepQueries(category, location) {
     'West',
   ];
 
-  for (const area of innerAreas.slice(0, 6)) {
+  for (const area of innerAreas.slice(0, 3)) {
     if (area.toLowerCase().includes(lowerCity)) {
       addQ(`${category} in ${area}, ${stateCode || 'USA'}`);
     } else {
-      addQ(`${category} in ${area} ${cityName}, ${stateCode || 'USA'}`);
+      addQ(`${category} in ${area}, ${cleanLoc}, USA`);
     }
   }
-
-  // 4. Sub-local trade combinations
-  if (matchedSynonyms.length > 0) {
-    addQ(`${matchedSynonyms[0]} in North ${cityName}, ${stateCode || 'USA'}`);
-    addQ(`${matchedSynonyms[0]} in South ${cityName}, ${stateCode || 'USA'}`);
-  }
-
-  // 5. Fallback independent & local contractor queries
-  addQ(`Independent ${category} in ${cleanLoc}, USA`);
-  addQ(`Local ${category} contractor in ${cleanLoc}, USA`);
 
   return queries;
 }
@@ -579,9 +581,7 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
         continue;
       }
 
-      let prevExtractedCount = 0;
-      let staleRounds = 0;
-      const scrollRounds = 12;
+      const scrollRounds = 16;
       for (let round = 0; round < scrollRounds; round++) {
         if (leads.length >= TARGET_LEADS) break;
 
@@ -763,15 +763,6 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
           await Promise.all(verifiers.map((v) => verifyWorker(v)));
         }
 
-        // Fast-forward to next sub-query if feed is exhausted
-        if (extracted.length === prevExtractedCount && candidatesToVerify.length === 0) {
-          staleRounds++;
-          if (staleRounds >= 2) break;
-        } else {
-          staleRounds = 0;
-        }
-        prevExtractedCount = extracted.length;
-
         // Scroll feed down
         await page.evaluate(() => {
           const feed = document.querySelector('div[role="feed"]');
@@ -783,7 +774,7 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
             feed.scrollTop += 3000;
           }
         });
-        await sleep(400);
+        await sleep(650);
 
         // Break early if Google Maps reached the end of results
         const isEnd = await page.evaluate(() => {
