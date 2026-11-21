@@ -308,6 +308,10 @@ async function verifyCandidatePlace(verifierPage, mapsLink, candidateName, rpcSt
           .trim();
       }
 
+      // Official Google Maps business category button (e.g. "Beauty salon", "General contractor")
+      const catEl = document.querySelector('button[jsaction*="category"], button.DkEaL, span.DkEaL');
+      const detailCategory = catEl ? catEl.innerText.trim() : '';
+
       return {
         website: '',
         foundBy: 'none',
@@ -315,6 +319,7 @@ async function verifyCandidatePlace(verifierPage, mapsLink, candidateName, rpcSt
         detailReviews,
         detailRating,
         detailAddress,
+        detailCategory,
       };
     });
 
@@ -324,6 +329,147 @@ async function verifyCandidatePlace(verifierPage, mapsLink, candidateName, rpcSt
     console.warn(`Verification note for "${candidateName}":`, err.message);
     return { website: '', foundBy: 'error' };
   }
+}
+
+/**
+ * Strict Category Relevance Validator:
+ * Ensures scraped businesses match the user's searched niche and strictly rejects
+ * unrelated industries (e.g. general contractors appearing in salon searches).
+ */
+function isCategoryRelevant(userCategory, candidateCategory, candidateName) {
+  if (!userCategory || !userCategory.trim()) return true;
+
+  const userNorm = userCategory.toLowerCase().trim();
+  const candCatNorm = (candidateCategory || '').toLowerCase().trim();
+  const candNameNorm = (candidateName || '').toLowerCase().trim();
+
+  const stopWords = new Set([
+    'and', '&', 'or', 'in', 'near', 'the', 'of', 'for', 'services', 'service',
+    'center', 'centre', 'specialist', 'specialists', 'company', 'co', 'llc', 'inc',
+    'group', 'pros', 'pro', 'usa'
+  ]);
+
+  function getTokens(str) {
+    return str
+      .replace(/[^\w\s]/g, ' ')
+      .split(/\s+/)
+      .map((t) => t.trim())
+      .filter((t) => t.length > 2 && !stopWords.has(t))
+      .map((t) => {
+        if (t.endsWith('ies')) return t.slice(0, -3) + 'y';
+        if (t.endsWith('es') && !t.endsWith('ses')) return t.slice(0, -2);
+        if (t.endsWith('s') && !t.endsWith('ss')) return t.slice(0, -1);
+        if (t.endsWith('ing')) return t.slice(0, -3);
+        return t;
+      });
+  }
+
+  const userTokens = getTokens(userNorm);
+  if (userTokens.length === 0) return true;
+
+  // 1. Direct match: candidate category or candidate name contains any key user token
+  for (const ut of userTokens) {
+    if (candCatNorm.includes(ut) || candNameNorm.includes(ut)) {
+      return true;
+    }
+  }
+
+  // 2. High-Intent Industry Synonym Clusters
+  const INDUSTRY_CLUSTERS = [
+    {
+      keys: ['salon', 'barber', 'hair', 'beauty', 'spa', 'nail', 'lash', 'wax', 'esthetician', 'cosmetolog', 'facial'],
+      tags: ['salon', 'barber', 'hair', 'beauty', 'spa', 'nail', 'lash', 'wax', 'massage', 'cosmetic', 'skincare']
+    },
+    {
+      keys: ['plumb'],
+      tags: ['plumb', 'drain', 'pipe', 'water heater', 'sewer', 'rooter']
+    },
+    {
+      keys: ['roof'],
+      tags: ['roof', 'gutter', 'siding', 'shingle']
+    },
+    {
+      keys: ['hvac', 'air condition', 'heat', 'furnace', 'ventil'],
+      tags: ['hvac', 'air condition', 'heating', 'cooling', 'furnace', 'ac repair']
+    },
+    {
+      keys: ['electric'],
+      tags: ['electric', 'wiring', 'lighting', 'generator']
+    },
+    {
+      keys: ['landscap', 'lawn', 'mow', 'yard', 'turf', 'tree'],
+      tags: ['landscap', 'lawn', 'tree', 'garden', 'irrigation', 'sprinkler', 'grounds']
+    },
+    {
+      keys: ['paint'],
+      tags: ['paint', 'drywall', 'coating', 'deck']
+    },
+    {
+      keys: ['remodel', 'renovat', 'contractor', 'builder', 'construct'],
+      tags: ['contractor', 'construction', 'builder', 'remodel', 'renovation', 'handyman']
+    },
+    {
+      keys: ['dentist', 'dental'],
+      tags: ['dentist', 'dental', 'orthodont', 'teeth']
+    },
+    {
+      keys: ['auto', 'car', 'mechanic', 'tire', 'brake'],
+      tags: ['auto', 'mechanic', 'car', 'repair', 'transmission', 'brake', 'body shop', 'collision']
+    },
+    {
+      keys: ['clean', 'maid', 'janitor'],
+      tags: ['cleaning', 'maid', 'janitorial', 'carpet', 'pressure wash', 'housekeep']
+    },
+    {
+      keys: ['pest', 'exterminat'],
+      tags: ['pest', 'termite', 'exterminat', 'bed bug']
+    },
+    {
+      keys: ['locksmith'],
+      tags: ['locksmith', 'key', 'lock']
+    },
+    {
+      keys: ['towing'],
+      tags: ['towing', 'tow truck', 'roadside', 'wrecker']
+    }
+  ];
+
+  for (const cluster of INDUSTRY_CLUSTERS) {
+    const userMatchesCluster = userTokens.some((ut) =>
+      cluster.keys.some((k) => ut.includes(k) || k.includes(ut))
+    );
+    if (userMatchesCluster) {
+      // Check if candidate matches this cluster
+      const candMatches = cluster.tags.some(
+        (t) => candCatNorm.includes(t) || candNameNorm.includes(t)
+      );
+      if (candMatches) return true;
+
+      // If user clearly belongs to this cluster, but candidate belongs to an unrelated conflicting cluster (e.g. contractor in salon search)
+      if (candCatNorm && candCatNorm !== '—') {
+        return false;
+      }
+    }
+  }
+
+  // 3. Trade vs Non-Trade Discrepancy Guard
+  const TRADE_WORDS = ['contractor', 'construction', 'contracting', 'builder', 'remodeling', 'roofing', 'plumbing', 'electric'];
+  const userIsTrade = userTokens.some((ut) => TRADE_WORDS.some((tw) => ut.includes(tw) || tw.includes(ut)));
+  const candIsTrade = TRADE_WORDS.some((tw) => candCatNorm.includes(tw) || candNameNorm.includes(tw));
+
+  if (!userIsTrade && candIsTrade) {
+    // Non-trade user query (e.g. salons, dentist, gym) but candidate is a contractor -> REJECT
+    return false;
+  }
+
+  // If candidate has a specific category from Google Maps that has 0 token overlap with user category
+  if (candCatNorm && candCatNorm !== '—') {
+    const candTokens = getTokens(candCatNorm);
+    const hasOverlap = userTokens.some((ut) => candTokens.some((ct) => ut.includes(ct) || ct.includes(ut)));
+    return hasOverlap;
+  }
+
+  return true;
 }
 
 // Major US Metros and their key suburbs/neighborhoods for deep lead discovery
@@ -374,13 +520,14 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
   const cityName = cityParts[0];
   const stateCode = cityParts[1] || '';
 
-  // Smart High-Volume Query Generation: Core metro + suburbs + trade variations
+  // 100% Dynamic, Neutral Search Query Generation (Zero hardcoded industry keywords!)
   const queriesToRun = [
     `${category} in ${cleanLoc}, USA`,
+    `Local ${category} in ${cleanLoc}, USA`,
+    `${category} near ${cleanLoc}, USA`,
     `Independent ${category} in ${cleanLoc}, USA`,
-    `Local ${category} contractor in ${cleanLoc}, USA`,
     `Family owned ${category} in ${cleanLoc}, USA`,
-    `Affordable ${category} in ${cleanLoc}, USA`,
+    `Best ${category} in ${cleanLoc}, USA`,
   ];
 
   const lowerCity = cityName.toLowerCase();
@@ -391,7 +538,6 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
     }
   } else {
     queriesToRun.push(`${category} services in ${cleanLoc}, USA`);
-    queriesToRun.push(`${category} near ${cleanLoc}, USA`);
   }
 
   send(ws, 'status', { message: `🇺🇸 Deep Scanning Google Maps for "${category}" in "${location}"…` });
@@ -582,12 +728,32 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
               }
             }
 
+            // Extract Card Subtitle Category (e.g. "Beauty salon", "Hair salon", "General contractor")
+            let cardCategory = '';
+            const catEl = card.querySelector('button[jsaction*="category"], span.W4P4ne, div.W4P4ne');
+            if (catEl) {
+              cardCategory = catEl.innerText.trim();
+            }
+            if (!cardCategory) {
+              for (const line of candidateLines) {
+                if (line.includes('·')) {
+                  const parts = line.split('·');
+                  const firstPart = parts[0].trim();
+                  if (firstPart && !firstPart.includes('$') && !firstPart.includes('★') && !/\d{3}/.test(firstPart)) {
+                    cardCategory = firstPart;
+                    break;
+                  }
+                }
+              }
+            }
+
             items.push({
               name,
               phone,
               rating,
               cardReviews,
               address,
+              cardCategory,
               cardWebsite,
               mapsLink: link.href,
             });
@@ -596,12 +762,18 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
           return items;
         });
 
-        // Instant Pre-Filter (Eliminates obvious website owners in 0ms)
+        // Instant Pre-Filter (Eliminates obvious website owners & irrelevant categories in 0ms)
         const candidatesToVerify = [];
         for (const item of extracted) {
           const key = item.name.toLowerCase().trim();
           if (seenNames.has(key)) continue;
           seenNames.add(key);
+
+          // Layer 0: Category Relevance Pre-Filter (Reject unrelated industries immediately)
+          if (item.cardCategory && !isCategoryRelevant(category, item.cardCategory, item.name)) {
+            console.log(`[Category Filter (Card)]: Excluded "${item.name}" (card category "${item.cardCategory}" does not match "${category}")`);
+            continue;
+          }
 
           // Layer 1: Google Maps internal RPC data check
           const rpcData = rpcStore.get(key);
@@ -639,6 +811,13 @@ async function scrapeGoogleMaps(category, location, ws, seenNames) {
 
               if (hasRealWebsite(verified.website)) {
                 console.log(`[Layer-2 Filter (Detail DOM/RPC)]: Excluded "${item.name}" (website: ${verified.website}, foundBy: ${verified.foundBy})`);
+                continue;
+              }
+
+              // Layer 2C: Official Category Relevance Validation (Detail Page / Card)
+              const finalCat = verified.detailCategory || item.cardCategory || '';
+              if (!isCategoryRelevant(category, finalCat, item.name)) {
+                console.log(`[Category Filter (Detail)]: Excluded "${item.name}" (category "${finalCat}" does not match "${category}")`);
                 continue;
               }
 
